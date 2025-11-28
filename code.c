@@ -10,7 +10,7 @@ typedef struct Edge {
     struct Edge *next;
 } Edge;
 
-Edge *adj[MAXV];  // adjacency list
+Edge *adj[MAXV];  
 
 void addEdge(int u, int v, int w) {
     Edge *e = (Edge *)malloc(sizeof(Edge));
@@ -45,7 +45,7 @@ void dijkstra(int n, int src) {
 
     for (int count = 0; count < n - 1; count++) {
         int u = findMinDistance(dist, visited, n);
-        if (u == -1) break;  // no more reachable vertices
+        if (u == -1) break; 
 
         visited[u] = 1;
 
@@ -71,12 +71,12 @@ void dijkstra(int n, int src) {
 
 int main() {
     int n, m;
-    int directed = 1; // set to 0 if roads are two-way
+    int directed = 1; 
 
     printf("Enter number of nodes and edges: ");
     scanf("%d %d", &n, &m);
 
-    // initialize adjacency list
+
     for (int i = 0; i < n; i++) {
         adj[i] = NULL;
     }
@@ -85,9 +85,9 @@ int main() {
     for (int i = 0; i < m; i++) {
         int u, v, w;
         scanf("%d %d %d", &u, &v, &w);
-        addEdge(u, v, w);      // road u -> v
+        addEdge(u, v, w);      
         if (!directed) {
-            addEdge(v, u, w);  // if undirected, add reverse edge
+            addEdge(v, u, w);  
         }
     }
 
