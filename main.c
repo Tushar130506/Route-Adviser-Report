@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAXV 100
+#define INF 1000000000
+
+typedef struct Edge {
+    int to;
+    int weight;
+    struct Edge *next;
+} Edge;
+
+Edge *adj[MAXV];  
+
+void addEdge(int u, int v, int w) {
+    Edge *e = (Edge *)malloc(sizeof(Edge));
+    e->to = v;
+    e->weight = w;
+    e->next = adj[u];
+    adj[u] = e;
+}
+
+int findMinDistance(int dist[], int visited[], int n) {
+    int min = INF;
+    int idx = -1;
+    for (int i = 0; i < n; i++) {
+        if (!visited[i] && dist[i] < min) {
+            min = dist[i];
+            idx = i;
+        }
+    }
+    return idx;
+}
+
+void dijkstra(int n, int src) {
+    int dist[MAXV];
+    int visited[MAXV];
+
+    for (int i = 0; i < n; i++) {
+        dist[i] = INF;
+        visited[i] = 0;
+    }
+
+    dist[src] = 0;
+
+    for (int count = 0; count < n - 1; count++) {
+        int u = findMinDistance(dist, visited, n);
+        if (u == -1) break;  
+
+        visited[u] = 1;
+
+        Edge *e = adj[u];
+        while (e != NULL) {
+            int v = e->to;
+            int w = e->weight;
+            if (!visited[v] && dist[u] != INF && dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+            }
+            e = e->next;
+        }
+    }
+
+    printf("Fastest distance from source %d to all other nodes:\n", src);
+    for (int i = 0; i < n; i++) {
+        if (dist[i] == INF)
+            printf("Node %d: unreachable\n", i);
+        else
+            printf("Node %d: %d\n", i, dist[i]);
+    }
+}
+
+int main() {
+    int n, m;
+    int directed = 1; 
+
+    printf("Enter number of nodes and edges: ");
+    scanf("%d %d", &n, &m);
+
+    
+    for (int i = 0; i < n; i++) {
+        adj[i] = NULL;
+    }
+
+    printf("Enter edges as: from to weight\n");
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        scanf("%d %d %d", &u, &v, &w);
+        addEdge(u, v, w);     
+        if (!directed) {
+            addEdge(v, u, w);  
+        }
+    }
+
+    int src;
+    printf("Enter source node: ");
+    scanf("%d", &src);
+
+    dijkstra(n, src);
+
+    return 0;
+}
